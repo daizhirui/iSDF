@@ -66,7 +66,7 @@ conda activate isdf
 ```
 Install pytorch by following instructions [here](https://pytorch.org/get-started/locally/), then:
 ```
-pip install -e .
+python setup.py develop
 ```
 
 ### Downloading the data

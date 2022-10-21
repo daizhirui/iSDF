@@ -133,9 +133,9 @@ class RealsenseFrankaOffline(Dataset):
         distortion_coeffs=None,
         camera_matrix=None,
     ):
-        abspath = os.path.abspath(sys.argv[0])
-        dname = os.path.dirname(abspath)
-        os.chdir(dname)
+        # abspath = os.path.abspath(sys.argv[0])
+        # dname = os.path.dirname(abspath)
+        # os.chdir(dname)
         self.root_dir = root_dir
         self.rgb_dir = os.path.join(root_dir, "rgb")
         self.depth_dir = os.path.join(root_dir, "depth")

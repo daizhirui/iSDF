@@ -1,8 +1,8 @@
 {
     "dataset": {
         "format": "replicaCAD",
-        "seq_dir": "../../data/seqs/apt_2_nav/",
-        "gt_sdf_dir": "../../data/gt_sdfs/apt_2/",
+        "seq_dir": "data/seqs/apt_2_nav/",
+        "gt_sdf_dir": "data/gt_sdfs/apt_2/",
         "noisy_depth": 1,
         "im_indices": [0, 200, 400, 500, 570, 650, 800, 750, 700],
         "depth_scale": 3276.75,
@@ -18,7 +18,7 @@
     },
     "eval": {
         "do_vox_comparison": 0,
-        "eval_pts_root": "../../data/eval_pts/",
+        "eval_pts_root": "data/eval_pts/",
         "do_eval": 0,
         "eval_freq_s": 1,
         "sdf_eval": 1,

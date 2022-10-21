@@ -17,52 +17,7 @@ from isdf.visualisation import isdf_window
 from isdf.modules import trainer
 
 
-def optim_iter(trainer, t):
-    # get/add data---------------------------------------------------------
-    new_kf = None
-    end = False
-    finish_optim = trainer.steps_since_frame == trainer.optim_frames
-    if trainer.incremental and (finish_optim or t == 0):
-        # After n steps with new frame, check whether to add it to kf set.
-        if t == 0:
-            add_new_frame = True
-        else:
-            add_new_frame = trainer.check_keyframe_latest()
-
-        if add_new_frame:
-            new_frame_id = trainer.get_latest_frame_id()
-            size_dataset = len(trainer.scene_dataset)
-            if new_frame_id >= size_dataset:
-                end = True
-                print("**************************************",
-                      "End of sequence",
-                      "**************************************")
-            else:
-                print("Total step time", trainer.tot_step_time)
-                print("frame______________________", new_frame_id)
-
-                frame_data = trainer.get_data([new_frame_id])
-                trainer.add_frame(frame_data)
-
-                if t == 0:
-                    trainer.last_is_keyframe = True
-                    trainer.optim_frames = 200
-
-        if t == 0 or (isdf_trainer.last_is_keyframe and not add_new_frame):
-            new_kf = isdf_trainer.frames.im_batch_np[-1]
-            h = int(new_kf.shape[0] / 6)
-            w = int(new_kf.shape[1] / 6)
-            new_kf = cv2.resize(new_kf, (w, h))
-
-    # optimisation step---------------------------------------------
-    losses, step_time = isdf_trainer.step()
-    status = [k + ': {:.6f}  '.format(losses[k]) for k in losses.keys()]
-    status = "".join(status) + '-- Step time: {:.2f}  '.format(step_time)
-
-    return status, new_kf, end
-
-
-if __name__ == "__main__":
+def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     seed = 1
@@ -77,7 +32,7 @@ if __name__ == "__main__":
         action="store_false",
         help="disable incremental SLAM option",
     )
-    args, _ = parser.parse_known_args()  # ROS adds extra unrecongised args
+    args, _ = parser.parse_known_args()  # ROS adds extra unrecognised args
     config_file = args.config
     incremental = args.no_incremental
 
@@ -91,6 +46,53 @@ if __name__ == "__main__":
     # open3d vis window --------------------------------------------------------
     app = gui.Application.instance
     app.initialize()
+
+    def optim_iter(_trainer, t):
+        # get/add data---------------------------------------------------------
+        new_kf = None
+        end = False
+        finish_optim = _trainer.steps_since_frame == _trainer.optim_frames
+        if _trainer.incremental and (finish_optim or t == 0):
+            # After n steps with new frame, check whether to add it to kf set.
+            if t == 0:
+                add_new_frame = True
+            else:
+                add_new_frame = _trainer.check_keyframe_latest()
+
+            if add_new_frame:
+                new_frame_id = _trainer.get_latest_frame_id()
+                size_dataset = len(_trainer.scene_dataset)
+                if new_frame_id >= size_dataset:
+                    end = True
+                    print(
+                        "**************************************",
+                        "End of sequence",
+                        "**************************************"
+                        )
+                else:
+                    print("Total step time", _trainer.tot_step_time)
+                    print("frame______________________", new_frame_id)
+
+                    frame_data = _trainer.get_data([new_frame_id])
+                    _trainer.add_frame(frame_data)
+
+                    if t == 0:
+                        _trainer.last_is_keyframe = True
+                        _trainer.optim_frames = 200
+
+            if t == 0 or (isdf_trainer.last_is_keyframe and not add_new_frame):
+                new_kf = isdf_trainer.frames.im_batch_np[-1]
+                h = int(new_kf.shape[0] / 6)
+                w = int(new_kf.shape[1] / 6)
+                new_kf = cv2.resize(new_kf, (w, h))
+
+        # optimisation step---------------------------------------------
+        losses, step_time = isdf_trainer.step()
+        status = [k + ': {:.6f}  '.format(losses[k]) for k in losses.keys()]
+        status = "".join(status) + '-- Step time: {:.2f}  '.format(step_time)
+
+        return status, new_kf, end
+
     mono = app.add_font(gui.FontDescription(gui.FontDescription.MONOSPACE))
     w = isdf_window.iSDFWindow(
         isdf_trainer,
@@ -98,3 +100,7 @@ if __name__ == "__main__":
         mono,
     )
     app.run()
+
+
+if __name__ == "__main__":
+    main()

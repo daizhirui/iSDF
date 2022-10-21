@@ -1,5 +1,6 @@
 res
 results/figs/
+results/iSDF/[0-9]*-[0-9]*-[0-9]*_[0-9]*-[0-9]*-[0-9]*
 results/iSDF/batch_test
 results/iSDF/robopen
 results/kinectfusion+/
@@ -14,6 +15,8 @@ data/eval_pts
 data/realsense_franka
 data/**/**.mp4
 data/scannet_notes.txt
+data/data_full
+data/franka_iSDF
 
 isdf/datasets/examples/
 

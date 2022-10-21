@@ -31,7 +31,7 @@ from isdf.visualisation import draw, draw3D
 from isdf.eval.metrics import start_timing, end_timing
 
 
-class Trainer():
+class Trainer:
     def __init__(
         self,
         device,

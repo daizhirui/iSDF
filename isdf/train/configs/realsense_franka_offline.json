@@ -1,7 +1,7 @@
 {
     "dataset": {
         "format": "realsense_franka_offline",
-        "seq_dir": "../../data/realsense_franka/0",
+        "seq_dir": "data/realsense_franka/0",
         "depth_scale": 1000.0,
         "fps": 10,
         "camera": {

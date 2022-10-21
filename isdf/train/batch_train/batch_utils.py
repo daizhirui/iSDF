@@ -229,15 +229,15 @@ def load_params(base_config_file):
         ("replicaCAD", "apt_3_obj", "apt_3"),
         ("replicaCAD", "apt_3_nav", "apt_3"),
 
-        # ScanNet longer sequences
-        ("ScanNet", "scene0010_00", "scene0010_00"),
-        ("ScanNet", "scene0030_00", "scene0030_00"),
-        ("ScanNet", "scene0031_00", "scene0031_00"),
-
-        # ScanNet shorter sequences
-        ("ScanNet", "scene0004_00", "scene0004_00"),
-        ("ScanNet", "scene0005_00", "scene0005_00"),
-        ("ScanNet", "scene0009_00", "scene0009_00"),
+        # # ScanNet longer sequences
+        # ("ScanNet", "scene0010_00", "scene0010_00"),
+        # ("ScanNet", "scene0030_00", "scene0030_00"),
+        # ("ScanNet", "scene0031_00", "scene0031_00"),
+        #
+        # # ScanNet shorter sequences
+        # ("ScanNet", "scene0004_00", "scene0004_00"),
+        # ("ScanNet", "scene0005_00", "scene0005_00"),
+        # ("ScanNet", "scene0009_00", "scene0009_00"),
     ]
 
     return base_config, seqs
@@ -389,7 +389,7 @@ def create_configs_nruns(
     runs_per_seq=10, save_slices=False,
 ):
     """
-        Only one paramter at a time is varied from the default config.
+        Only one parameter at a time is varied from the default config.
         Creates config files for experiments.
         Input is the setting for the experiments.
         Settings should be in a dict where the keys match the keys in the

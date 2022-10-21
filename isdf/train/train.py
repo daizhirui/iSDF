@@ -25,9 +25,9 @@ def train(
     show_obj=False,
     update_im_freq=50,
     update_mesh_freq=200,
-    grid_dim = 200, 
+    grid_dim=200,
     # opt
-    extra_opt_steps = 400,
+    extra_opt_steps=400,
     # save
     save_path=None,
 ):
@@ -37,7 +37,7 @@ def train(
         config_file,
         chkpt_load_file=chkpt_load_file,
         incremental=incremental,
-        grid_dim = grid_dim
+        grid_dim=grid_dim
     )
 
     # saving init--------------------------------------------------------------
@@ -46,25 +46,33 @@ def train(
         with open(save_path + "/config.json", "w") as outfile:
             json.dump(isdf_trainer.config, outfile, indent=4)
 
+        checkpoint_path = None
         if isdf_trainer.save_checkpoints:
             checkpoint_path = os.path.join(save_path, "checkpoints")
             os.makedirs(checkpoint_path)
+
+        slice_path = None
         if isdf_trainer.save_slices:
             slice_path = os.path.join(save_path, 'slices')
             os.makedirs(slice_path)
             isdf_trainer.write_slices(
-                slice_path, prefix="0.000_", include_gt=True)
+                slice_path, prefix="0.000_", include_gt=True
+            )
+
+        mesh_path = None
         if isdf_trainer.save_meshes:
             mesh_path = os.path.join(save_path, 'meshes')
             os.makedirs(mesh_path)
 
     # eval init--------------------------------------------------------------
+    res = None
     if isdf_trainer.do_eval:
         res = {}
         if isdf_trainer.sdf_eval:
             res['sdf_eval'] = {}
         if isdf_trainer.mesh_eval:
             res['mesh_eval'] = {}
+    vox_res = None
     if isdf_trainer.do_vox_comparison:
         vox_res = {}
 
@@ -112,9 +120,11 @@ def train(
                 new_frame_id = isdf_trainer.get_latest_frame_id()
                 if new_frame_id >= size_dataset:
                     break_at = t + extra_opt_steps
-                    print(f"**************************************",
-                          "End of sequence, runnining {extra_opt_steps} steps",
-                          "**************************************")
+                    print(
+                        f"**************************************",
+                        "End of sequence, runnining {extra_opt_steps} steps",
+                        "**************************************"
+                    )
                 else:
                     print("Total step time", isdf_trainer.tot_step_time)
                     print("frame______________________", new_frame_id)
@@ -128,7 +138,8 @@ def train(
 
             if t == 0 or (isdf_trainer.last_is_keyframe and not add_new_frame):
                 kf_vis = visualisation.draw.add_im_to_vis(
-                    kf_vis, isdf_trainer.frames.im_batch_np[-1], reduce_factor=6)
+                    kf_vis, isdf_trainer.frames.im_batch_np[-1], reduce_factor=6
+                )
                 cv2.imshow('iSDF keyframes', kf_vis)
                 cv2.waitKey(1)
 
@@ -148,18 +159,24 @@ def train(
             isdf_trainer.update_vis_vars()
             display["keyframes"] = isdf_trainer.frames_vis()
             # display["slices"] = isdf_trainer.slices_vis()
+
+            obj_slices_viz = None
             if show_obj:
                 obj_slices_viz = isdf_trainer.obj_slices_vis()
 
+            scene = None
+            obj_scene = None
             if update_mesh_freq is not None and (t % update_mesh_freq == 0):
                 scene = isdf_trainer.draw_3D(
                     show_pc=False, show_mesh=t > 200, draw_cameras=True,
-                    camera_view=False, show_gt_mesh=False)
+                    camera_view=False, show_gt_mesh=False
+                )
                 if show_obj:
                     try:
                         obj_scene = isdf_trainer.draw_obj_3D()
-                    except:
+                    except Exception as e:
                         print('Failed to draw mesh')
+                        print(e)
 
             display["scene"] = scene
             if show_obj and obj_scene is not None:
@@ -215,14 +232,16 @@ def train(
                             "loss": losses['total_loss'].item(),
                         },
                         os.path.join(
-                            checkpoint_path, "step_" + save_t + ".pth")
+                            checkpoint_path, "step_" + save_t + ".pth"
+                        )
                     )
 
                 if isdf_trainer.save_slices:
                     isdf_trainer.write_slices(
                         slice_path, prefix=save_t + "_",
                         include_gt=False, include_diff=False,
-                        include_chomp=False, draw_cams=True)
+                        include_chomp=False, draw_cams=True
+                    )
 
                 if isdf_trainer.save_meshes and isdf_trainer.tot_step_time > 0.4:
                     isdf_trainer.write_mesh(mesh_path + f"/{save_t}.ply")
@@ -241,21 +260,27 @@ def train(
         elapsed_eval = isdf_trainer.tot_step_time - last_eval
         if isdf_trainer.do_eval and elapsed_eval > isdf_trainer.eval_freq_s:
             last_eval = isdf_trainer.tot_step_time - \
-                isdf_trainer.tot_step_time % isdf_trainer.eval_freq_s
+                        isdf_trainer.tot_step_time % isdf_trainer.eval_freq_s
 
             if isdf_trainer.sdf_eval and isdf_trainer.gt_sdf_file is not None:
                 visible_res = isdf_trainer.eval_sdf(visible_region=True)
                 obj_errors = isdf_trainer.eval_object_sdf()
 
                 print("Time ---------->", isdf_trainer.tot_step_time)
-                print("Visible region SDF error: {:.4f}".format(
-                    visible_res["av_l1"]))
+                print(
+                    "Visible region SDF error: {:.4f}".format(
+                        visible_res["av_l1"]
+                    )
+                )
                 print("Objects SDF error: ", obj_errors)
 
                 if not incremental:
                     full_vol_res = isdf_trainer.eval_sdf(visible_region=False)
-                    print("Full region SDF error: {:.4f}".format(
-                        full_vol_res["av_l1"]))
+                    print(
+                        "Full region SDF error: {:.4f}".format(
+                            full_vol_res["av_l1"]
+                        )
+                    )
                 if save:
                     res['sdf_eval'][t] = {
                         'time': isdf_trainer.tot_step_time,
@@ -279,7 +304,7 @@ def train(
                     json.dump(res, f, indent=4)
 
 
-if __name__ == "__main__":
+def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     seed = 1
@@ -287,7 +312,7 @@ if __name__ == "__main__":
     torch.manual_seed(seed)
 
     parser = argparse.ArgumentParser(description="iSDF.")
-    parser.add_argument("--config", type=str, required = True, help="input json config")
+    parser.add_argument("--config", type=str, required=True, help="input json config")
     parser.add_argument(
         "-ni",
         "--no_incremental",
@@ -341,7 +366,7 @@ if __name__ == "__main__":
         on = True
         while on:
             try:
-                out = next(scenes)
+                _ = next(scenes)
             except StopIteration:
                 on = False
 
@@ -356,3 +381,7 @@ if __name__ == "__main__":
         visualisation.display.display_scenes(
             scenes, height=int(h * 0.5), width=int(w * 0.5), tile=tiling
         )
+
+
+if __name__ == "__main__":
+    main()
