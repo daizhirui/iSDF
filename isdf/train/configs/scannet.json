@@ -1,18 +1,18 @@
 {
     "dataset": {
         "format": "ScanNet",
-        "seq_dir": "../../data/seqs/scene0005_00/",
-        "gt_sdf_dir": "../../data/gt_sdfs/scene0005_00/",
+        "seq_dir": "data/seqs/scene0005_00/",
+        "gt_sdf_dir": "data/gt_sdfs/scene0005_00/",
         "noisy_depth": 1,
         "im_indices": [0, 200, 400, 500, 570, 650],
-        "scannet_dir": "/mnt/sda/ScanNet/scans/scene0005_00/",
+        "scannet_dir": "data/scannet/scans/scene0005_00/",
         "depth_scale": 1000.0,
         "fps": 30,
-        "intrinsics_file": "/mnt/sda/ScanNet/scans/scene0005_00/scene0005_00.txt"
+        "intrinsics_file": "data/scannet/scans/scene0005_00/scene0005_00.txt"
     },
     "eval": {
         "do_vox_comparison": 0,
-        "eval_pts_root": "../../data/eval_pts/",
+        "eval_pts_root": "data/eval_pts/",
         "do_eval": 0,
         "eval_freq_s": 1,
         "sdf_eval": 1,

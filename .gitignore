@@ -17,6 +17,7 @@ data/**/**.mp4
 data/scannet_notes.txt
 data/data_full
 data/franka_iSDF
+data/scannet
 
 isdf/datasets/examples/
 

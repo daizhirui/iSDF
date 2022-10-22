@@ -244,11 +244,11 @@ def load_params(base_config_file):
 
 
 def create_config(
-    base_config, format, seq, gt_sdf, data_dir, scannet_root,
+    base_config, format_, seq, gt_sdf, data_dir, scannet_root,
 ):
     config = base_config.copy()
 
-    config['dataset']['format'] = format
+    config['dataset']['format'] = format_
     config['dataset']['scene_mesh_file'] = \
         data_dir + "gt_sdfs/" + gt_sdf + "/mesh.obj"
     config['dataset']['gt_sdf_dir'] = \
@@ -261,7 +261,7 @@ def create_config(
     config['dataset']['seq_dir'] = \
         data_dir + "seqs/" + seq + "/"
 
-    if format == "ScanNet":
+    if format_ == "ScanNet":
         config['dataset']['scannet_dir'] = \
             scannet_root + "/scans/" + seq + "/"
 

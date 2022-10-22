@@ -86,7 +86,15 @@ For instructions on how to generate the dataset see the [data README](data).
 
 #### ScanNet sequences
 
-To run the ScanNet sequences, you must download the [ScanNet dataset](http://www.scan-net.org/). After downloading the scans, you should export the depth, color, poses and intrinsics for the sequences you wish to use with [this script](https://github.com/ScanNet/ScanNet/tree/master/SensReader/python).  
+To run the ScanNet sequences, you must download the [ScanNet dataset]
+(http://www.scan-net.org/). After downloading the scans, you should export 
+the depth, color, poses and intrinsics for the sequences you wish to use 
+with [this script](data/scannet_reader.py).  
+
+```shell
+mkdir -p data/scannet/scene0005_00/frames
+python data/scannet_reader.py --filename data/scannet/scans/scene0005_00/scene0005_00.sens --export_depth_images --export_color_images --export_poses --export_intrinsics --output_path data/scannet/scene0005_00/frames
+```
 
 ### Usage
 

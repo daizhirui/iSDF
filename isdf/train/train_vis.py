@@ -94,7 +94,7 @@ def main():
         return status, new_kf, end
 
     mono = app.add_font(gui.FontDescription(gui.FontDescription.MONOSPACE))
-    w = isdf_window.iSDFWindow(
+    _ = isdf_window.iSDFWindow(
         isdf_trainer,
         optim_iter,
         mono,
